@@ -1,5 +1,5 @@
 {
-  "name": "@maulanashalihin/describe-image",
+  "name": "describe-image-pi",
   "version": "1.0.1",
   "description": "Pi extension — describe images via vision model when your active model cannot see images directly",
   "keywords": [
