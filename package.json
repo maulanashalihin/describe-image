@@ -9,9 +9,11 @@
     "type": "git",
     "url": "git+https://github.com/maulanashalihin/describe-image.git"
   },
+  "homepage": "https://github.com/maulanashalihin/describe-image",
   "files": [
     "index.ts",
-    "config.json"
+    "config.json",
+    "README.md"
   ],
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
