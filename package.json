@@ -1,5 +1,5 @@
 {
-  "name": "describe-image-pi",
+  "name": "describe-image-agent",
   "version": "1.0.1",
   "description": "Pi extension — describe images via vision model when your active model cannot see images directly",
   "keywords": [
