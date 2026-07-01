@@ -1,0 +1,14 @@
+{
+  "model": "MiniMax-M3",
+  "apiUrl": "https://api.minimax.io/v1/chat/completions",
+  "authKey": "minimax",
+  "maxTokens": 2048,
+  "temperature": 0,
+  "toolName": "describe_image",
+  "toolLabel": "Describe Image",
+  "toolDescription": "Analyze an image using a vision model. Use this when the user shares an image and your model does not support direct image input.",
+  "promptSnippet": "Describe images via vision model when you cannot view them",
+  "promptGuidelines": [
+    "Use describe_image when the user shares an image and you cannot view it directly. Pass the file path and an optional specific question. The tool calls a separate vision model and returns the description as text."
+  ]
+}
