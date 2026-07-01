@@ -1,8 +1,13 @@
 {
   "name": "@maulanashalihin/describe-image",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pi extension — describe images via vision model when your active model cannot see images directly",
-  "keywords": ["pi-package", "describe-image", "vision", "multi-modal"],
+  "keywords": [
+    "pi-package",
+    "describe-image",
+    "vision",
+    "multi-modal"
+  ],
   "license": "MIT",
   "author": "maulanashalihin",
   "repository": {
@@ -24,6 +29,8 @@
     "@types/node": "^22.0.0"
   },
   "pi": {
-    "extensions": ["./index.ts"]
+    "extensions": [
+      "./index.ts"
+    ]
   }
 }
