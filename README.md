@@ -57,9 +57,10 @@ Edit `config.json` next to the extension:
 
 ```json
 {
-  "model": "MiniMax-M3",
-  "apiUrl": "https://api.minimax.io/v1/chat/completions",
-  "authKey": "minimax",
+  "model": "minimax-m3",
+  "apiUrl": "https://opencode.ai/zen/go/v1/messages",
+  "authKey": "opencode-go",
+  "apiFormat": "anthropic",
   "maxTokens": 2048,
   "temperature": 0
 }
@@ -67,24 +68,67 @@ Edit `config.json` next to the extension:
 
 | Field | Default | Description |
 |-------|---------|-------------|
-| `model` | `MiniMax-M3` | Vision model ID |
-| `apiUrl` | `https://api.minimax.io/v1/chat/completions` | OpenAI-compatible vision API endpoint |
-| `authKey` | `minimax` | Key name in `~/.pi/agent/auth.json` |
+| `model` | `minimax-m3` | Vision model ID |
+| `apiUrl` | `https://opencode.ai/zen/go/v1/messages` | API endpoint |
+| `authKey` | `opencode-go` | Key name in `~/.pi/agent/auth.json` |
+| `apiFormat` | `anthropic` | API format: `"openai"` or `"anthropic"` |
 | `maxTokens` | `2048` | Max response tokens |
 | `temperature` | `0` | Model temperature |
+
+### `apiFormat`
+
+The extension supports two API formats for image input:
+
+| Format | Header | Image block | Endpoint example |
+|--------|--------|-------------|------------------|
+| `"openai"` | `Authorization: Bearer` | `{ type: "image_url", image_url: { url: "data:..." } }` | `/chat/completions` |
+| `"anthropic"` | `x-api-key` | `{ type: "image", source: { type: "base64", media_type: "...", data: "..." } }` | `/messages` |
+
+### Provider examples
+
+**OpenCode API (Anthropic-format models — MiniMax, Qwen):**
+
+```json
+{
+  "model": "minimax-m3",
+  "apiUrl": "https://opencode.ai/zen/go/v1/messages",
+  "authKey": "opencode-go",
+  "apiFormat": "anthropic"
+}
+```
+
+**OpenCode API (OpenAI-format models — Kimi, DeepSeek, MiMo, GLM):**
+
+```json
+{
+  "model": "mimo-v2.5-pro",
+  "apiUrl": "https://opencode.ai/zen/go/v1/chat/completions",
+  "authKey": "opencode-go",
+  "apiFormat": "openai"
+}
+```
+
+**Direct MiniMax API:**
+
+```json
+{
+  "model": "MiniMax-M3",
+  "apiUrl": "https://api.minimax.io/v1/chat/completions",
+  "authKey": "minimax",
+  "apiFormat": "openai"
+}
+```
 
 The API key is read from `~/.pi/agent/auth.json` under the key specified by `authKey`:
 
 ```json
 {
-  "minimax": {
+  "opencode-go": {
     "type": "api_key",
     "key": "sk-..."
   }
 }
 ```
-
-You can swap to any OpenAI-compatible vision API — just change `apiUrl`, `model`, and `authKey` in `config.json`.
 
 ## Files
 

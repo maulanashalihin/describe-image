@@ -10,6 +10,7 @@ interface Config {
 	model: string;
 	apiUrl: string;
 	authKey: string;
+	apiFormat: "openai" | "anthropic";
 	maxTokens: number;
 	temperature: number;
 	toolName: string;
@@ -160,12 +161,27 @@ export default function (pi: ExtensionAPI) {
 			});
 
 			const mime = mimeOf(ext);
-			const body = JSON.stringify({
-				model: cfg.model,
-				messages: [
-					{
-						role: "user",
-						content: [
+
+			// Build request body based on API format
+			const contentBlock =
+				cfg.apiFormat === "anthropic"
+					? [
+							{
+								type: "image",
+								source: {
+									type: "base64",
+									media_type: mime,
+									data: b64,
+								},
+							},
+							{
+								type: "text",
+								text:
+									params.prompt ??
+									"Describe this image in detail. What do you see? Include layout, colors, text, and any notable elements.",
+							},
+					  ]
+					: [
 							{
 								type: "image_url",
 								image_url: { url: `data:${mime};base64,${b64}` },
@@ -176,20 +192,31 @@ export default function (pi: ExtensionAPI) {
 									params.prompt ??
 									"Describe this image in detail. What do you see? Include layout, colors, text, and any notable elements.",
 							},
-						],
-					},
-				],
+					  ];
+
+			const body = JSON.stringify({
+				model: cfg.model,
+				messages: [{ role: "user", content: contentBlock }],
 				max_tokens: cfg.maxTokens,
 				temperature: cfg.temperature,
 			});
 
 			try {
+				const headers: Record<string, string> = {
+					"Content-Type": "application/json",
+				};
+
+				if (cfg.apiFormat === "anthropic") {
+					headers["x-api-key"] = apiKey;
+					// Some anthropic proxies need the Bearer header too — send both
+					headers["Authorization"] = `Bearer ${apiKey}`;
+				} else {
+					headers["Authorization"] = `Bearer ${apiKey}`;
+				}
+
 				const res = await fetch(cfg.apiUrl, {
 					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${apiKey}`,
-					},
+					headers,
 					body,
 					signal,
 				});
@@ -207,10 +234,22 @@ export default function (pi: ExtensionAPI) {
 					};
 				}
 
-				const json = (await res.json()) as {
-					choices?: Array<{ message?: { content?: string } }>;
-				};
-				let text = json?.choices?.[0]?.message?.content ?? "_(no response)_";
+				// Parse response based on API format
+				let text: string;
+				if (cfg.apiFormat === "anthropic") {
+					const json = (await res.json()) as {
+						content?: Array<{ text?: string }>;
+					};
+					text =
+						json?.content?.[0]?.text ??
+						json?.content?.[1]?.text ??
+						"_(no response)_";
+				} else {
+					const json = (await res.json()) as {
+						choices?: Array<{ message?: { content?: string } }>;
+					};
+					text = json?.choices?.[0]?.message?.content ?? "_(no response)_";
+				}
 
 				// Strip <think>...</think> reasoning tags
 				if (text.startsWith("<think>")) {

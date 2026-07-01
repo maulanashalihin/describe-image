@@ -1,7 +1,8 @@
 {
-  "model": "MiniMax-M3",
-  "apiUrl": "https://api.minimax.io/v1/chat/completions",
-  "authKey": "minimax",
+  "model": "minimax-m3",
+  "apiUrl": "https://opencode.ai/zen/go/v1/messages",
+  "authKey": "opencode-go",
+  "apiFormat": "anthropic",
   "maxTokens": 2048,
   "temperature": 0,
   "toolName": "describe_image",
